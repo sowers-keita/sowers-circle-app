@@ -268,8 +268,7 @@ function staffCreate(){const pl=state.settings.places||[];return `
     <div class="field"><label>時間</label><input id="cTime" value="20:00-22:00" oninput="updateLine()"></div>
     <div class="field"><label>場所</label><select id="cPlace" onchange="updateLine()">${pl.length?pl.map(p=>`<option>${p.name}</option>`).join(''):'<option>（管理者が場所を未登録）</option>'}</select></div>
     <div class="field"><label>定員</label><input id="cCap" type="number" value="12" oninput="updateLine()"></div>
-    <div id="lineBox" class="sline"></div>
-    <p class="muted small">場所代・人件費・参加費は、管理者が設定した金額を自動で使います。</p></div>
+    <div id="lineBox" class="sline"></div></div>
   <div class="card"><h2>開催日を選ぶ</h2><p class="muted small">同じ場所・時間・競技の日をタップ（複数OK）→ まとめて作成。</p>
     <div class="calendar">${monthDays().map(d=>d?`<button type="button" class="day ${byDate(d).length?'has':''} ${createDates.includes(d)?'picked':''}" onclick="toggleCreate('${d}',this)"><b>${Number(d.slice(8))}</b></button>`:'<i></i>').join('')}</div>
     <div class="between" style="margin-top:12px"><span class="pill" id="cCount">選択 ${createDates.length}日</span><button onclick="bulkCreate()">まとめて作成</button></div></div>`}
