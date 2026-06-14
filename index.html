@@ -6,122 +6,125 @@
 <title>sowers サークル｜予約・出欠</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=M+PLUS+Rounded+1C:wght@400;500;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=swap');
 *{box-sizing:border-box}
-:root{--orange:#F5A03D;--orange-d:#E5882E;--pink:#D6188C;--green:#71C846;--bg:#fbf6f2;--ink:#241a16;--muted:#8a7d75;--line:#efe5dd;--card:#fff;--red:#ef4444;--blue:#3b82f6;--grad:linear-gradient(135deg,#F5A03D,#D6188C)}
-body{margin:0;font-family:'Geist','M PLUS Rounded 1C',-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sans-serif;color:var(--ink);background:#fbf6f2;background-image:radial-gradient(1100px 460px at 100% -8%,rgba(245,160,61,.16),transparent),radial-gradient(800px 400px at -10% 0,rgba(214,24,140,.10),transparent);background-attachment:fixed}
-h1,h2,h3{font-family:'Geist','M PLUS Rounded 1C','Hiragino Sans','Yu Gothic',sans-serif;margin:0}
-header{position:sticky;top:0;z-index:20;background:var(--grad);color:#fff;border-radius:0 0 24px 24px;padding:14px 16px calc(14px + env(safe-area-inset-top));box-shadow:0 8px 24px rgba(214,24,140,.18)}
-header h1{font-size:20px;font-weight:900;letter-spacing:.4px}
-header .sub{font-size:12px;opacity:.92;margin-top:2px}
-.rolebadge{background:rgba(255,255,255,.95);color:#241a16;border-radius:999px;padding:8px 12px;font-weight:900;font-size:13px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.12)}
-.rolebadge.r-admin{background:#241a16;color:#fff}
-.rolebadge.r-staff{background:#8b5cf6;color:#fff}
-.rolebadge.r-participant{background:#fff;color:#16764d}
-main{padding:12px 14px calc(100px + env(safe-area-inset-bottom));max-width:680px;margin:0 auto}
-.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;margin:12px 0;box-shadow:0 12px 30px rgba(36,26,22,.06)}
-h2{font-size:17px;font-weight:900;margin-bottom:6px}
-h3{font-size:14px;color:var(--muted);margin:10px 0 6px}
+:root{--bg:#ffffff;--card:#ffffff;--ink:#111111;--muted:#666666;--line:#EAEAEA;--main:#10A37F;--main-soft:#E7F5F0;--accent:#FF9F1C;--accent-soft:#FFF3E0;--warn:#FF5A5F;--warn-soft:#FFEBEC;--green:#10A37F;--orange:#FF9F1C;--pink:#10A37F;--red:#FF5A5F;--blue:#10A37F;--grad:#10A37F}
+@media (prefers-color-scheme: dark){:root{--bg:#0f0f0f;--card:#171717;--ink:#f5f5f5;--muted:#9a9a9a;--line:#262626;--main-soft:#10241f;--accent-soft:#2a2113;--warn-soft:#2a1718}}
+body{margin:0;font-family:'Geist','M PLUS Rounded 1C',-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:'Geist','M PLUS Rounded 1C','Hiragino Sans','Yu Gothic',sans-serif;margin:0;font-weight:700;letter-spacing:.2px}
+button,input,select,textarea{font-family:inherit}
 p{margin:6px 0}
 .muted{color:var(--muted)}.small{font-size:12px}.center{text-align:center}
-.between{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-button{appearance:none;border:0;border-radius:14px;padding:13px 14px;font-weight:800;font-size:15px;background:var(--grad);color:#fff;box-shadow:0 8px 18px rgba(214,24,140,.22);cursor:pointer}
+header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding:16px 18px calc(14px + env(safe-area-inset-top))}
+header h1{font-size:19px;font-weight:700;color:var(--ink)}
+header .sub{font-size:12px;color:var(--muted);margin-top:3px}
+main{padding:20px 16px calc(110px + env(safe-area-inset-bottom));max-width:680px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px;margin:16px 0;animation:fade .22s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-size:17px;font-weight:700;margin-bottom:10px}
+h3{font-size:13px;font-weight:700;color:var(--muted);margin:18px 0 8px}
+.between{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+button{appearance:none;border:0;border-radius:18px;padding:14px 16px;font-weight:700;font-size:15px;background:var(--main);color:#fff;cursor:pointer;transition:transform .12s ease,opacity .2s}
+button:active{transform:scale(.97)}
 button.big{width:100%;min-height:52px;font-size:16px}
-button.secondary{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
-button.ghost{background:transparent;color:var(--pink);box-shadow:none;border:0;padding:10px;font-weight:800;width:100%}
-button.orange{background:linear-gradient(135deg,#F5A03D,#E5882E)}
-button.pink{background:linear-gradient(135deg,#ff7aab,#D6188C)}
-button.red{background:linear-gradient(135deg,#fb7185,#ef4444)}
-button:disabled{opacity:.45}
-input,select,textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:13px;font-size:16px;background:#fff;color:var(--ink)}
-label{font-size:12px;color:var(--muted);font-weight:800}
-.field{margin:10px 0}
-.pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:6px 11px;background:#fff2e6;color:#c2570f;border:1px solid #ffe0c6;font-size:12px;font-weight:800}
-.pill.danger{background:#ffe8ec;color:#be123c;border-color:#ffd2da}
-.pill.warn{background:#fff2e0;color:#b45309;border-color:#ffe2bf}
-.pill.blue{background:#e8f0ff;color:#1d4ed8;border-color:#d4e2ff}
+button.secondary{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+button.ghost{background:transparent;color:var(--main);border:0;padding:12px;width:100%}
+button.orange{background:var(--accent)}
+button.pink{background:var(--main)}
+button.red{background:var(--warn)}
+button:disabled{opacity:.4}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px;font-size:16px;background:var(--card);color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--main)}
+label{font-size:12px;color:var(--muted);font-weight:600}
+.field{margin:14px 0}
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:6px 12px;background:var(--main-soft);color:var(--main);font-size:12px;font-weight:700}
+.pill.danger{background:var(--warn-soft);color:var(--warn)}
+.pill.warn{background:var(--accent-soft);color:#b46a00}
+.pill.blue{background:var(--main-soft);color:var(--main)}
 .calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.day{position:relative;min-height:46px;border:1.5px solid var(--line);border-radius:14px;background:#fff;font-size:13px;font-weight:800;color:var(--ink);padding:5px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.day .dot{width:6px;height:6px;border-radius:50%;background:var(--pink);margin-top:3px}
-.day.has{border-color:var(--orange);background:#fff6ec}
-.day.selected{outline:3px solid rgba(245,160,61,.4)}
-.day.picked{background:var(--grad);border-color:transparent;color:#fff;box-shadow:0 6px 14px rgba(214,24,140,.28)}
+.day{position:relative;min-height:46px;border:1px solid var(--line);border-radius:14px;background:var(--card);font-size:13px;font-weight:600;color:var(--ink);padding:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .12s}
+.day:active{transform:scale(.96)}
+.day .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);margin-top:3px}
+.day.has{border-color:var(--main)}
+.day.selected{border-color:var(--main);box-shadow:inset 0 0 0 1px var(--main)}
+.day.picked{background:var(--main);border-color:var(--main);color:#fff}
 .day.picked b,.day.picked .dot{color:#fff;background:#fff}
 .calendar i{display:block}
-.people{display:grid;gap:8px;margin-top:10px}
-.prow{display:flex;align-items:center;gap:2px;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff;flex-wrap:wrap}
+.people{display:grid;gap:10px;margin-top:12px}
+.prow{display:flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:16px;padding:12px 14px;background:var(--card);flex-wrap:wrap}
 .prow.big{font-size:16px}
 .prow.plain{border:0;padding:6px 2px;background:transparent}
-.ringMini{position:relative;width:42px;height:42px;border-radius:50%;padding:3px;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;margin-right:4px;background:#fff;overflow:visible;flex:0 0 auto}
-.ringMini .inner{width:100%;height:100%;border-radius:50%;background:#fff1e6;display:inline-flex;align-items:center;justify-content:center;font-size:19px;overflow:hidden}
+.ringMini{position:relative;width:40px;height:40px;border-radius:50%;padding:2px;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;margin-right:6px;background:var(--card);overflow:visible;flex:0 0 auto}
+.ringMini .inner{width:100%;height:100%;border-radius:50%;background:var(--main-soft);display:inline-flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden}
 .ringMini .inner img{width:100%;height:100%;object-fit:cover}
-.ring-white{border:2px solid #f1f1f4;box-shadow:0 0 0 1px #e2ddd7}
-.ring-blue{border:2px solid #3b82f6}.ring-green{border:2px solid #71C846}.ring-red{border:2px solid #ef4444}
-.ring-gold{border:2px solid #f59e0b;box-shadow:0 0 10px rgba(245,158,11,.35)}
-.ring-purple{border:2px solid #8b5cf6}.ring-black{border:2px solid #111827}
-.bday-hat{position:absolute;top:-12px;left:-4px;width:21px;height:21px;transform:rotate(-20deg);filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.18));pointer-events:none;z-index:3}
-.emoji-badge{display:inline-flex;align-items:center;justify-content:center;width:23px;height:23px;border-radius:50%;background:#fff;border:1px solid var(--line);font-size:15px;margin:0 5px 0 2px;vertical-align:middle}
-.p-name{font-weight:800;vertical-align:middle}
-.role-tag{margin-left:4px;color:var(--muted);font-size:12px}
-.actions{margin-top:12px}
-.subtabs{display:flex;gap:8px;margin:2px 0 10px}
-.subtabs button{flex:1;background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none;min-height:48px}
-.subtabs button.on{background:var(--grad);color:#fff;border-color:transparent}
-.seg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.seg button{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none;display:flex;flex-direction:column;gap:2px;min-height:56px}
-.seg button small{color:var(--muted);font-weight:700;font-size:11px}
-.seg button.on{background:var(--grad);color:#fff;border-color:transparent}
-.seg button.on small{color:rgba(255,255,255,.9)}
-.emojipick{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-.emo{width:50px;height:50px;font-size:22px;border-radius:14px;background:#fff;border:1.5px solid var(--line);box-shadow:none;color:inherit;padding:0}
-.emo.sel{background:var(--grad);border-color:transparent}
-.filebtn{display:inline-flex;align-items:center;justify-content:center;width:100%;min-height:52px;border-radius:14px;background:var(--grad);color:#fff;font-weight:800;box-shadow:0 8px 18px rgba(214,24,140,.22);cursor:pointer}
-.ticket{display:flex;align-items:center;gap:10px;border:1.5px dashed var(--orange);border-radius:16px;padding:12px;margin:8px 0;background:#fff8f0}
-.ticket.used{border-style:solid;border-color:var(--line);background:#f6f1ec;opacity:.7}
-.ticket b{flex:1}
-.places{display:grid;gap:8px}
-.placerow{display:flex;gap:8px;align-items:center}
-.placerow>input{padding:11px;flex:1;min-width:0}
-.placerow .amt{display:flex;align-items:center;gap:4px;flex:0 0 auto}
-.placerow .amt input{width:78px;text-align:right;padding:11px 8px}
-.placerow .amt span{font-size:12px;color:var(--muted);font-weight:800;white-space:nowrap}
-.placerow .del{background:#fff;color:var(--red);border:1.5px solid var(--line);box-shadow:none;width:42px;padding:0;min-height:42px;font-size:18px}
-.placerow.add>input{border-style:dashed}
-.amt{display:flex;align-items:center;gap:6px}
-.amt>input{max-width:150px;text-align:right}
-.amt>span{font-size:12px;color:var(--muted);font-weight:800;white-space:nowrap}
-.erow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
-.erow:last-child{border-bottom:0}
-.eright{display:flex;flex-direction:column;gap:4px;align-items:flex-end}
-.atlist{display:grid;gap:8px;margin-top:10px}
-.atrow{display:flex;align-items:center;gap:8px;text-align:left;background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none;border-radius:14px;padding:10px;min-height:56px;font-weight:700;flex-wrap:wrap}
-.atrow .check{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);display:inline-flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex:0 0 auto;background:#fff}
-.atrow.on{border-color:var(--green);background:#f0fbe9}
-.atrow.on .check{background:var(--green);border-color:var(--green)}
-.sline{background:#fff6ec;border:1px solid #ffe0c6;border-radius:14px;padding:12px;margin-top:6px}
-.money{font-size:20px;font-weight:900;color:var(--pink)}
-.bar{height:13px;background:#f3ece6;border-radius:99px;overflow:hidden;margin-top:6px}
-.bar>span{display:block;height:100%;background:var(--grad)}
-.bstat{margin:10px 0}
-.legend{display:grid;gap:8px}
-.legend>div{display:flex;align-items:center;gap:8px}
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;justify-content:space-around;gap:2px;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.4) blur(12px);border-top:1px solid var(--line);padding:8px 6px calc(8px + env(safe-area-inset-bottom))}
-.navbtn{flex:1;background:transparent;color:var(--muted);box-shadow:none;border:0;padding:4px 2px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:800;border-radius:12px}
-.navbtn .ic{font-size:20px;line-height:1}
-.navbtn.active{color:var(--pink)}
-.toast{position:fixed;left:14px;right:14px;bottom:86px;background:#241a16;color:#fff;padding:13px;border-radius:16px;z-index:50;text-align:center;font-weight:700;display:none;box-shadow:0 12px 30px rgba(0,0,0,.25)}
-.toast.show{display:block}
-.sheet{border:2px solid var(--pink)}
-@media(min-width:560px){.emo{width:54px;height:54px}}
-button,input,select,textarea{font-family:inherit}
+.ring-white{border:2px solid var(--line)}
+.ring-blue{border:2px solid var(--main)}.ring-green{border:2px solid var(--main)}.ring-red{border:2px solid var(--warn)}
+.ring-gold{border:2px solid var(--accent)}.ring-purple{border:2px solid #8b5cf6}.ring-black{border:2px solid var(--ink)}
+.bday-hat{position:absolute;top:-12px;left:-4px;width:20px;height:20px;transform:rotate(-18deg);pointer-events:none;z-index:3}
+.emoji-badge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--card);overflow:hidden;margin:0 6px 0 2px;vertical-align:middle}
 .emoji-badge .emoimg{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
-.emoji-badge{overflow:hidden;padding:0;background:#fff}
-.emo{overflow:hidden}
-.emo img{width:100%;height:100%;object-fit:cover;border-radius:12px;display:block}
+.p-name{font-weight:700;vertical-align:middle}
+.role-tag{margin-left:4px;color:var(--muted);font-size:12px}
+.actions{margin-top:14px}
+.subtabs{display:flex;gap:8px;margin:2px 0 12px}
+.subtabs button{flex:1;background:var(--card);color:var(--muted);border:1px solid var(--line);min-height:46px}
+.subtabs button.on{background:var(--main-soft);color:var(--main);border-color:var(--main)}
+.seg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.seg button{background:var(--card);color:var(--ink);border:1px solid var(--line);display:flex;flex-direction:column;gap:2px;min-height:56px}
+.seg button small{color:var(--muted);font-weight:500;font-size:11px}
+.seg button.on{background:var(--main-soft);border-color:var(--main);color:var(--main)}
+.seg button.on small{color:var(--main)}
+.emojipick{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.emo{width:54px;height:54px;border-radius:16px;background:var(--card);border:1px solid var(--line);padding:0;overflow:hidden}
+.emo img{width:100%;height:100%;object-fit:cover;display:block}
+.emo.sel{border:2px solid var(--main)}
+.filebtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border-radius:18px;background:var(--main);color:#fff;font-weight:700;cursor:pointer}
+.ticket{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:18px;padding:14px;margin:10px 0;background:var(--card)}
+.ticket.used{opacity:.5}
+.ticket b{flex:1}
+.places{display:grid;gap:10px}
+.placerow{display:flex;gap:8px;align-items:center}
+.placerow>input{padding:12px;flex:1;min-width:0}
+.placerow .amt{display:flex;align-items:center;gap:4px;flex:0 0 auto}
+.placerow .amt input{width:80px;text-align:right;padding:12px 8px}
+.placerow .amt span{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap}
+.placerow .del{background:var(--card);color:var(--warn);border:1px solid var(--line);width:44px;padding:0;min-height:44px;font-size:18px}
+.placerow.add>input{border-style:dashed}
+.amt{display:flex;align-items:center;gap:8px}
+.amt>input{max-width:160px;text-align:right}
+.amt>span{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap}
+.erow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.erow:last-child{border-bottom:0}
+.eright{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.atlist{display:grid;gap:10px;margin-top:12px}
+.atrow{display:flex;align-items:center;gap:10px;text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:12px;min-height:56px;font-weight:600;flex-wrap:wrap}
+.atrow .check{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);display:inline-flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex:0 0 auto;background:var(--card)}
+.atrow.on{border-color:var(--main);background:var(--main-soft)}
+.atrow.on .check{background:var(--main);border-color:var(--main)}
+.sline{background:var(--main-soft);border:0;border-radius:16px;padding:14px;margin-top:8px}
+.money{font-size:19px;font-weight:800;color:var(--main)}
+.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:8px}
+.bar>span{display:block;height:100%;background:var(--main)}
+.bstat{margin:14px 0}
+.legend{display:grid;gap:10px}
+.legend>div{display:flex;align-items:center;gap:10px}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;justify-content:space-around;gap:2px;background:var(--bg);border-top:1px solid var(--line);padding:10px 8px calc(10px + env(safe-area-inset-bottom))}
+.navbtn{flex:1;background:transparent;color:var(--muted);border:0;padding:4px 2px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;border-radius:12px}
+.navbtn .ic{font-size:24px;line-height:1}
+.navbtn.active{color:var(--main)}
+.material-symbols-rounded{font-family:'Material Symbols Rounded';font-weight:normal;font-style:normal;line-height:1;font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+.rolebadge{background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:700;font-size:12px;white-space:nowrap}
+.rolebadge.r-admin{color:var(--ink);border-color:var(--ink)}
+.rolebadge.r-staff{color:#8b5cf6;border-color:#8b5cf6}
+.rolebadge.r-participant{color:var(--main);border-color:var(--main)}
+.toast{position:fixed;left:16px;right:16px;bottom:96px;background:var(--ink);color:var(--bg);padding:14px;border-radius:16px;z-index:50;text-align:center;font-weight:600;display:none}
+.toast.show{display:block;animation:fade .2s ease both}
+.sheet{border:1px solid var(--main)}
 </style>
 </head>
 <body>
-<header><div class="between"><div><h1>🌱 sowers サークル</h1><div class="sub">予約・出欠・コミュニティ</div></div><span id="roleBadge" class="rolebadge"></span></div></header>
+<header><div class="between"><div><h1>sowers サークル</h1><div class="sub">予約・出欠・コミュニティ</div></div><span id="roleBadge" class="rolebadge"></span></div></header>
 <main id="view"></main>
 <nav id="nav" class="nav"></nav>
 <div id="toast" class="toast"></div>
@@ -196,8 +199,8 @@ function monthDays(){const now=new Date();const y=now.getFullYear(),m=now.getMon
 function byDate(d){return state.events.filter(e=>e.date===d)}
 
 /* ===== navigation ===== */
-function tabsFor(role){const t=[{id:'reserve',label:'予約',icon:'📅'},{id:'mypage',label:'マイページ',icon:'🙂'}];if(role==='staff'||role==='admin')t.push({id:'staff',label:'スタッフ',icon:'📣'});if(role==='admin'){t.push({id:'admin',label:'管理',icon:'⚙️'});t.push({id:'analytics',label:'分析',icon:'📊'})}return t}
-function renderNav(){const role=roleOf(currentUser());const tabs=tabsFor(role);if(!tabs.find(t=>t.id===currentTab))currentTab='reserve';return tabs.map(t=>`<button class="navbtn ${t.id===currentTab?'active':''}" onclick="switchTab('${t.id}')"><span class="ic">${t.icon}</span><span>${t.label}</span></button>`).join('')}
+function tabsFor(role){const t=[{id:'reserve',label:'予約',icon:'calendar_today'},{id:'mypage',label:'マイページ',icon:'account_circle'}];if(role==='staff'||role==='admin')t.push({id:'staff',label:'スタッフ',icon:'campaign'});if(role==='admin'){t.push({id:'admin',label:'管理',icon:'tune'});t.push({id:'analytics',label:'分析',icon:'monitoring'})}return t}
+function renderNav(){const role=roleOf(currentUser());const tabs=tabsFor(role);if(!tabs.find(t=>t.id===currentTab))currentTab='reserve';return tabs.map(t=>`<button class="navbtn ${t.id===currentTab?'active':''}" onclick="switchTab('${t.id}')"><span class="ic material-symbols-rounded">${t.icon}</span><span>${t.label}</span></button>`).join('')}
 function switchTab(id){const allowed=tabsFor(roleOf(currentUser())).map(t=>t.id);if(!allowed.includes(id))id='reserve';currentTab=id;render()}
 function roleIcon(role){return role==='admin'?'⚫':role==='staff'?'🟣':'🟢'}
 function denied(){return '<div class="card center muted">この画面は表示できません（権限がありません）。下のタブからご利用ください。</div>'}
@@ -206,7 +209,7 @@ function denied(){return '<div class="card center muted">この画面は表示�
 function pickDate(d){selectedDate=d;render()}
 function calendarPick(sel,fn){return `<div class="calendar">${monthDays().map(d=>d?`<button class="day ${byDate(d).length?'has':''} ${d===sel?'selected':''}" onclick="${fn}('${d}')"><b>${Number(d.slice(8))}</b>${byDate(d).length?'<i class="dot"></i>':''}</button>`:'<i></i>').join('')}</div>`}
 function renderReserve(){const evs=byDate(selectedDate);return `
-  <div class="card"><h2>📅 予約カレンダー</h2><p class="muted small">日付をタップ。色付きの日にイベントがあります。</p>${calendarPick(selectedDate,'pickDate')}</div>
+  <div class="card"><h2>予約カレンダー</h2><p class="muted small">日付をタップ。色付きの日にイベントがあります。</p>${calendarPick(selectedDate,'pickDate')}</div>
   <div class="muted small center">${fmtDate(selectedDate)} のイベント</div>
   ${evs.length?evs.map(reserveCard).join(''):'<div class="card muted center">この日はイベントがありません</div>'}
   ${evs.map(surveyCard).join('')}`}
@@ -232,9 +235,9 @@ function toggleVote(eid,phone){const me=currentUser();if(roleOf(me)!=='participa
 function renderMypage(){const u=currentUser();const nxt=nextRingInfo(votePoints(u.phone));const myT=(state.tickets||[]).filter(t=>t.userId===u.id);
   return `
   <div class="card"><div class="prow big">${personRow({phone:u.phone,nick:u.nick,icon:u.icon})}</div>
-    <div class="sline" style="margin-top:10px">${roleOf(u)==='participant'?(nxt.remain?`もうすぐ <b>${nxt.next}リング</b> 🎉`:'最高ランク：ゴールドリング 👑'):'管理者・スタッフは固定リングです'}</div></div>
+    <div class="sline" style="margin-top:10px">${roleOf(u)==='participant'?(nxt.remain?`もうすぐ <b>${nxt.next}リング</b>`:'最高ランク：ゴールドリング'):'管理者・スタッフは固定リングです'}</div></div>
   <div class="card"><h2>写真・絵文字</h2>
-    <label class="filebtn">📷 アイコン写真を選ぶ<input type="file" accept="image/*" onchange="setImage(event)" hidden></label>
+    <label class="filebtn"><span class="material-symbols-rounded">photo_camera</span>写真を選ぶ<input type="file" accept="image/*" onchange="setImage(event)" hidden></label>
     ${u.image?`<button class="ghost" onclick="clearImage()">写真を削除</button>`:''}
     <div class="field"><label>名前の前の絵文字</label><div class="emojipick">${ICON_KEYS.map(k=>`<button class="emo ${u.icon===k?'sel':''}" onclick="uSet('icon','${k}')"><img src="${ICONS[k]}" alt=""></button>`).join('')}</div></div></div>
   <div class="card"><h2>プロフィール</h2>
@@ -290,7 +293,7 @@ function renderAdmin(){if(roleOf(currentUser())!=='admin')return denied();return
   <div class="card"><h2>無料チケット発行</h2><div class="row"><select id="tUser">${state.users.map(u=>`<option value="${u.id}">${u.nick}</option>`).join('')}</select><button onclick="issueTicket(document.getElementById('tUser').value)">発行</button></div></div>
   <div class="card"><h2>イベントの収支</h2><p class="muted small">サスティナブルライン＝黒字に必要な人数。</p>${state.events.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(adminEventRow).join('')||'<div class="muted small">イベントがありません</div>'}</div>
   ${voteLogs()}${ringLegend()}`}
-function adminSettings(){const s=state.settings;return `<div class="card"><h2>⚙️ 場所と料金の設定</h2><p class="muted small">ここで決めた金額を、スタッフが作るイベントに自動で使います。</p>
+function adminSettings(){const s=state.settings;return `<div class="card"><h2>場所と料金の設定</h2><p class="muted small">ここで決めた金額を、スタッフが作るイベントに自動で使います。</p>
   <h3>場所ごとの場所代（1時間あたり）</h3>
   <div class="places">${(s.places||[]).map((p,i)=>`<div class="placerow"><input value="${p.name}" onchange="setPlace(${i},'name',this.value)"><div class="amt"><input type="number" value="${p.perHour}" onchange="setPlace(${i},'perHour',this.value)"><span>円/時</span></div><button class="del" onclick="delPlace(${i})">×</button></div>`).join('')}</div>
   <div class="placerow add"><input id="npName" placeholder="新しい場所名"><div class="amt"><input id="npCost" type="number" placeholder="2500"><span>円/時</span></div><button onclick="addPlace()">＋</button></div>
@@ -307,12 +310,12 @@ function ringLegend(){return `<div class="card"><h2>リングの色</h2><div cla
 
 /* ===== analytics ===== */
 function renderAnalytics(){if(roleOf(currentUser())!=='admin')return denied();const a={};state.events.forEach(e=>{const mo=e.date.slice(0,7);a[mo]=a[mo]||{total:0};a[mo].total+=e.bookings.length});const max=Math.max(1,...Object.values(a).map(x=>x.total));const bySport={};state.events.forEach(e=>bySport[e.sport]=(bySport[e.sport]||0)+e.bookings.length);const maxS=Math.max(1,...Object.values(bySport));const phones=[...new Set((state.votes||[]).map(v=>v.targetPhone))];const rank=phones.map(p=>({p,pts:votePoints(p),u:userByPhone(p)})).sort((x,y)=>y.pts-x.pts);
-  return `<div class="card"><h2>📊 貢献ポイント</h2>${rank.length?rank.map(r=>`<div class="erow"><span>${personRow({phone:r.p,nick:r.u.nick||r.p,icon:r.u.icon})}</span><b>${r.pts}pt</b></div>`).join(''):'<div class="muted small">まだ投票がありません</div>'}</div>
+  return `<div class="card"><h2>貢献ポイント</h2>${rank.length?rank.map(r=>`<div class="erow"><span>${personRow({phone:r.p,nick:r.u.nick||r.p,icon:r.u.icon})}</span><b>${r.pts}pt</b></div>`).join(''):'<div class="muted small">まだ投票がありません</div>'}</div>
   <div class="card"><h2>月別 参加者</h2>${Object.entries(a).map(([m,v])=>`<div class="bstat"><div class="between"><b>${m}</b><span>${v.total}人</span></div><div class="bar"><span style="width:${v.total/max*100}%"></span></div></div>`).join('')||'<div class="muted small">データなし</div>'}</div>
   <div class="card"><h2>競技別 参加者</h2>${Object.entries(bySport).map(([s,v])=>`<div class="bstat"><div class="between"><b>${sportEmoji(s)} ${s}</b><span>${v}人</span></div><div class="bar"><span style="width:${v/maxS*100}%"></span></div></div>`).join('')}</div>`}
 
 /* ===== render ===== */
-function render(){const me=currentUser();const rb=document.getElementById('roleBadge');if(rb){const role=roleOf(me);rb.textContent=`${roleIcon(role)} ${roleLabel(me)}モード`;rb.className='rolebadge r-'+role}document.getElementById('nav').innerHTML=renderNav();const fn={reserve:renderReserve,mypage:renderMypage,staff:renderStaff,admin:renderAdmin,analytics:renderAnalytics}[currentTab]||renderReserve;document.getElementById('view').innerHTML=fn();if(currentTab==='staff'&&staffView==='create'){try{updateLine()}catch(e){}}}
+function render(){const me=currentUser();const rb=document.getElementById('roleBadge');if(rb){const role=roleOf(me);rb.textContent=`${roleLabel(me)}モード`;rb.className='rolebadge r-'+role}document.getElementById('nav').innerHTML=renderNav();const fn={reserve:renderReserve,mypage:renderMypage,staff:renderStaff,admin:renderAdmin,analytics:renderAnalytics}[currentTab]||renderReserve;document.getElementById('view').innerHTML=fn();if(currentTab==='staff'&&staffView==='create'){try{updateLine()}catch(e){}}}
 render();
 </script>
 </body>
