@@ -144,7 +144,7 @@ let createDates=[];
 let staffView='create';
 let attendDate=today();
 
-function today(){return new Date().toISOString().slice(0,10)}
+function today(){const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate()).toISOString().slice(0,10)}
 function firstEventDate(){const s=[...state.events].sort((a,b)=>a.date.localeCompare(b.date));return s[0]?s[0].date:today()}
 function yen(n){return '¥'+Number(n||0).toLocaleString('ja-JP')}
 function uid(){return Math.random().toString(36).slice(2,10)}
