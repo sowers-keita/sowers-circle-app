@@ -61,9 +61,10 @@ label{font-size:12px;color:var(--muted);font-weight:600}
 .ringMini .inner{width:100%;height:100%;border-radius:50%;background:var(--main-soft);display:inline-flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden}
 .ringMini .inner img{width:100%;height:100%;object-fit:cover}
 .ring-white{border:2px solid var(--line)}
-.ring-blue{border:2px solid var(--main)}.ring-green{border:2px solid var(--main)}.ring-red{border:2px solid var(--warn)}
+.ring-blue{border:2px solid #3b82f6}.ring-green{border:2px solid #10A37F}.ring-red{border:2px solid var(--warn)}
 .ring-gold{border:2px solid var(--accent)}.ring-purple{border:2px solid #8b5cf6}.ring-black{border:2px solid var(--ink)}
 .bday-hat{position:absolute;top:-12px;left:-4px;width:20px;height:20px;transform:rotate(-18deg);pointer-events:none;z-index:3}
+.beginner-mark{position:absolute;bottom:-7px;right:-7px;font-size:14px;line-height:1;pointer-events:none;z-index:3}
 .emoji-badge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--card);overflow:hidden;margin:0 6px 0 2px;vertical-align:middle;font-size:14px}
 .emoji-badge .emoimg{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
 .p-name{font-weight:700;vertical-align:middle}
@@ -138,10 +139,10 @@ const ICON_KEYS=['a1','a2','a3','a4','a5','a6'];
 let state=load()||defaultState();migrate();
 let currentUserId=state.users[0].id;
 let currentTab='reserve';
-let selectedDate=firstEventDate();
+let selectedDate=today();
 let createDates=[];
 let staffView='create';
-let attendDate=firstEventDate();
+let attendDate=today();
 
 function today(){return new Date().toISOString().slice(0,10)}
 function firstEventDate(){const s=[...state.events].sort((a,b)=>a.date.localeCompare(b.date));return s[0]?s[0].date:today()}
@@ -167,6 +168,7 @@ function defaultState(){
     ],
     friends:[{ownerId:'u1',nick:'しょう',phone:'09077778888'},{ownerId:'u1',nick:'まい',phone:'09099990000'}],
     events:[
+      {id:'e0',date:date(-7),sport:'バレー',time:'20:00-22:00',place:'沖洲インドアパーク',capacity:12,bookings:[{phone:'09011112222',nick:'けい',icon:'👨',userId:'u1'},{phone:'09033334444',nick:'たろう',icon:'👨',userId:'u2'},{phone:'09055556666',nick:'はな',icon:'👩',userId:'u3'}],waitlist:[],attendedPhones:['09011112222','09033334444','09055556666']},
       {id:'e1',date:date(0),sport:'バレー',time:'20:00-22:00',place:'沖洲インドアパーク',capacity:12,bookings:[{phone:'09011112222',nick:'けい',icon:'👨',userId:'u1'},{phone:'09033334444',nick:'たろう',icon:'👨',userId:'u2'},{phone:'09055556666',nick:'はな',icon:'👩',userId:'u3'},{phone:'09012345678',nick:'みなと',icon:'👦',userId:'u4'}],waitlist:[],attendedPhones:[]},
       {id:'e2',date:date(2),sport:'バスケ',time:'20:00-22:00',place:'徳島市立体育館',capacity:16,bookings:[{phone:'09033334444',nick:'たろう',icon:'👨',userId:'u2'}],waitlist:[],attendedPhones:[]},
       {id:'e3',date:date(5),sport:'バドミントン',time:'19:30-21:30',place:'スポセン',capacity:18,bookings:[],waitlist:[],attendedPhones:[]}
@@ -194,7 +196,10 @@ function roleLabel(p){const r=roleOf(p);return r==='admin'?'管理者':r==='staf
 function isBirthday(p){const u=userByPhone(p.phone)||{};return !!u.birth && Number(u.birth.slice(5,7))===new Date().getMonth()+1}
 function birthdayHat(p){if(!isBirthday(p))return '';return `<svg class="bday-hat" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg"><polygon points="14,2.5 6,23 22,23" fill="#D6188C"/><polygon points="14,2.5 6,23 14,23" fill="#fff" opacity="0.18"/><circle cx="10.5" cy="17.5" r="1.4" fill="#fff"/><circle cx="14.6" cy="12.5" r="1.4" fill="#fff"/><circle cx="12.6" cy="21" r="1.3" fill="#fff"/><circle cx="14" cy="3" r="2.7" fill="#71C846"/></svg>`}
 function avatarInner(p){const u=userByPhone(p.phone)||{};if(!u.id)return '👶';const img=u.image||p.image||'';if(img)return `<img src="${img}" alt="">`;const r=roleOf(p);if(r==='admin'||r==='staff')return `<img src="${ICONS.sprout}" alt="">`;return '👤'}
-function personRow(p){return `<span class="ringMini ${ringClassFor(p)}"><span class="inner">${avatarInner(p)}</span>${birthdayHat(p)}</span><span class="emoji-badge">${personIcon(p)}</span><span class="p-name">${p.nick||userByPhone(p.phone).nick||p.phone}</span> <span class="role-tag">${roleLabel(p)}</span>`}
+function attendCount(phone){return (state.events||[]).filter(e=>(e.attendedPhones||[]).includes(phone)).length}
+function isFirstTimer(p){const r=roleOf(p);if(r==='admin'||r==='staff')return false;return attendCount(p.phone)===0}
+function beginnerMark(p){return isFirstTimer(p)?'<span class="beginner-mark">🔰</span>':''}
+function personRow(p){return `<span class="ringMini ${ringClassFor(p)}"><span class="inner">${avatarInner(p)}</span>${birthdayHat(p)}${beginnerMark(p)}</span><span class="emoji-badge">${personIcon(p)}</span><span class="p-name">${p.nick||userByPhone(p.phone).nick||p.phone}</span> <span class="role-tag">${roleLabel(p)}</span>`}
 
 /* ===== calendar ===== */
 function monthDays(){const now=new Date();const y=now.getFullYear(),m=now.getMonth();const first=new Date(y,m,1);const days=new Date(y,m+1,0).getDate();let arr=[];for(let i=0;i<first.getDay();i++)arr.push(null);for(let day=1;day<=days;day++)arr.push(new Date(y,m,day).toISOString().slice(0,10));return arr}
@@ -259,7 +264,7 @@ function clearImage(){currentUser().image='';save();showToast('写真を削除�
 function useTicket(id){const t=state.tickets.find(x=>x.id===id);t.used=true;t.usedAt=new Date().toLocaleString('ja-JP');save();showToast('チケットを使用しました')}
 function addFriend(){const nick=document.getElementById('fNick').value.trim(),phone=document.getElementById('fPhone').value.trim();if(!nick||!phone)return showToast('ニックネームと電話番号を入力');if(state.users.some(u=>u.phone===phone)||state.friends.some(f=>f.phone===phone&&f.ownerId===currentUserId))return showToast('電話番号が重複しています');state.friends.push({ownerId:currentUserId,nick,phone});save();showToast('友達を追加しました')}
 function switchUser(id){currentUserId=id;currentTab='mypage';save()}
-function resetAll(){localStorage.removeItem(LS);state=defaultState();migrate();currentUserId=state.users[0].id;currentTab='reserve';selectedDate=firstEventDate();attendDate=firstEventDate();createDates=[];save();showToast('初期化しました')}
+function resetAll(){localStorage.removeItem(LS);state=defaultState();migrate();currentUserId=state.users[0].id;currentTab='reserve';selectedDate=today();attendDate=today();createDates=[];save();showToast('初期化しました')}
 
 /* ===== staff ===== */
 function renderStaff(){if(!['staff','admin'].includes(roleOf(currentUser())))return denied();return `<div class="subtabs"><button class="${staffView==='create'?'on':''}" onclick="setStaffView('create')">イベント作成</button><button class="${staffView==='attend'?'on':''}" onclick="setStaffView('attend')">出欠確認</button></div>${staffView==='create'?staffCreate():staffAttend()}`}
