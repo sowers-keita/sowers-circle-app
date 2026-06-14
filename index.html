@@ -83,6 +83,8 @@ label{font-size:12px;color:var(--muted);font-weight:600}
 .emo img{width:100%;height:100%;object-fit:cover;display:block}
 .emo.sel{border:2px solid var(--main)}
 .filebtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border-radius:18px;background:var(--main);color:#fff;font-weight:700;cursor:pointer}
+.tog{width:100%;min-height:50px;border-radius:18px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:700;margin-bottom:8px}
+.tog.on{background:var(--main);color:#fff;border-color:var(--main)}
 .ticket{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:18px;padding:14px;margin:10px 0;background:var(--card)}
 .ticket.used{opacity:.5}
 .ticket b{flex:1}
@@ -151,7 +153,7 @@ function uid(){return Math.random().toString(36).slice(2,10)}
 function ev(id){return state.events.find(e=>e.id===id)}
 function load(){try{return JSON.parse(localStorage.getItem(LS))}catch(e){return null}}
 function save(){localStorage.setItem(LS,JSON.stringify(state));render()}
-function migrate(){if(!state.settings)state.settings=defaultState().settings;state.users.forEach(u=>{if(u.image===undefined)u.image='';if(!ICONS[u.icon])u.icon='a1'})}
+function migrate(){if(!state.settings)state.settings=defaultState().settings;state.users.forEach(u=>{if(u.image===undefined)u.image='';if(!ICONS[u.icon])u.icon='a1';if(u.email===undefined)u.email='';if(u.password===undefined)u.password='';if(u.address===undefined)u.address='';if(u.insurance===undefined)u.insurance=false})}
 function showToast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>el.classList.remove('show'),2200)}
 function fmtDate(d){const dt=new Date(d+'T00:00');const w=['日','月','火','水','木','金','土'][dt.getDay()];return `${dt.getMonth()+1}/${dt.getDate()}(${w})`}
 function sportEmoji(s){return ({'バレー':'🏐','バスケ':'🏀','バドミントン':'🏸','フットサル':'⚽','卓球':'🏓','ドッジボール':'🤾','体操':'🤸'})[s]||'🏟️'}
@@ -161,10 +163,10 @@ function defaultState(){
   const date=(add)=>new Date(y,m,d.getDate()+add).toISOString().slice(0,10);
   return{
     users:[
-      {id:'u1',name:'木原 敬太',phone:'09011112222',nick:'けい',icon:'a2',role:'admin',image:'',birth:'1989-10-12'},
-      {id:'u2',name:'山田 太郎',phone:'09033334444',nick:'たろう',icon:'a3',role:'participant',image:'',birth:'1995-06-01'},
-      {id:'u3',name:'佐藤 花子',phone:'09055556666',nick:'はな',icon:'a5',role:'staff',image:'',birth:'1998-03-03'},
-      {id:'u4',name:'鈴木 みなと',phone:'09012345678',nick:'みなと',icon:'a1',role:'participant',image:'',birth:'2000-06-20'}
+      {id:'u1',name:'木原 敬太',phone:'09011112222',nick:'けい',icon:'a2',role:'admin',image:'',birth:'1989-10-12',email:'keita@sowers.jp',password:'sowers-admin',address:'徳島県小松島市中田町1-2-3',insurance:true},
+      {id:'u2',name:'山田 太郎',phone:'09033334444',nick:'たろう',icon:'a3',role:'participant',image:'',birth:'1995-06-01',email:'taro.yamada@example.com',password:'taro1234',address:'',insurance:false},
+      {id:'u3',name:'佐藤 花子',phone:'09055556666',nick:'はな',icon:'a5',role:'staff',image:'',birth:'1998-03-03',email:'hana.sato@sowers.jp',password:'hana5678',address:'',insurance:false},
+      {id:'u4',name:'鈴木 みなと',phone:'09012345678',nick:'みなと',icon:'a1',role:'participant',image:'',birth:'2000-06-20',email:'minato@example.com',password:'minato99',address:'徳島市上八万町4-5',insurance:true}
     ],
     friends:[{ownerId:'u1',nick:'しょう',phone:'09077778888'},{ownerId:'u1',nick:'まい',phone:'09099990000'}],
     events:[
@@ -251,7 +253,7 @@ function renderMypage(){const u=currentUser();const nxt=nextRingInfo(votePoints(
     <div class="field"><label>ニックネーム</label><input value="${u.nick}" onchange="uSet('nick',this.value)"></div>
     <div class="field"><label>名前</label><input value="${u.name}" onchange="uSet('name',this.value)"></div>
     <div class="field"><label>電話番号</label><input value="${u.phone}" onchange="uSet('phone',this.value)"></div>
-    <div class="field"><label>生年月日</label><input type="date" value="${u.birth||''}" onchange="uSet('birth',this.value)"></div></div>
+    <div class="field"><label>ログイン用メールアドレス</label><input type="email" value="${u.email||''}" onchange="uSet('email',this.value)"></div><div class="field"><label>ログイン用パスワード</label><input value="${u.password||''}" onchange="uSet('password',this.value)"></div></div><div class="card"><h2>スポーツ保険</h2><p class="muted small">加入する方のみ、住所と生年月日の登録が必要です。</p><button class="tog ${u.insurance?'on':''}" onclick="toggleInsurance()">${u.insurance?'加入する（ON）':'加入しない（OFF）'}</button><div class="field"><label>生年月日${u.insurance?'（必須）':'（任意）'}</label><input type="date" value="${u.birth||''}" onchange="uSet('birth',this.value)"></div>${u.insurance?`<div class="field"><label>住所（必須）</label><input value="${u.address||''}" placeholder="徳島県…" onchange="uSet('address',this.value)"></div>`:''}</div>
   <div class="card"><h2>電子チケット</h2>${myT.length?myT.map(t=>`<div class="ticket ${t.used?'used':''}"><b>${t.title}</b><span class="muted small">${t.used?'使用済み':'未使用'}</span>${t.used?'':`<button class="pink" onclick="useTicket('${t.id}')">使う</button>`}</div>`).join(''):'<div class="muted small">チケットはありません</div>'}</div>
   <div class="card"><h2>友達登録</h2><div class="field"><input id="fNick" placeholder="ニックネーム"></div><div class="field"><input id="fPhone" placeholder="電話番号"></div><button class="big" onclick="addFriend()">友達を追加</button>
     <div class="people">${state.friends.filter(f=>f.ownerId===u.id).map(f=>`<div class="prow plain">👤 ${f.nick}・${f.phone}</div>`).join('')||'<div class="muted small">まだいません</div>'}</div></div>
@@ -259,6 +261,7 @@ function renderMypage(){const u=currentUser();const nxt=nextRingInfo(votePoints(
     <div class="seg">${state.users.map(x=>`<button class="${x.id===u.id?'on':''}" onclick="switchUser('${x.id}')">${x.nick}<small>${roleLabel(x)}</small></button>`).join('')}</div>
     <button class="ghost" style="margin-top:10px" onclick="resetAll()">デモデータを初期化</button></div>`}
 function uSet(k,v){currentUser()[k]=v;save()}
+function toggleInsurance(){const u=currentUser();u.insurance=!u.insurance;save()}
 function setImage(ev){const f=ev.target.files&&ev.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{currentUser().image=rd.result;save();showToast('アイコン写真を設定しました')};rd.readAsDataURL(f)}
 function clearImage(){currentUser().image='';save();showToast('写真を削除しました')}
 function useTicket(id){const t=state.tickets.find(x=>x.id===id);t.used=true;t.usedAt=new Date().toLocaleString('ja-JP');save();showToast('チケットを使用しました')}
@@ -295,7 +298,7 @@ function toggleAttend(eid,phone){const e=ev(eid);e.attendedPhones=e.attendedPhon
 function finalizeAttend(eid){const e=ev(eid);e.bookings.forEach(p=>{if(!(e.attendedPhones||[]).includes(p.phone))state.penalties.push({phone:p.phone,date:e.date,eventId:e.id})});save();showToast('記録しました')}
 
 /* ===== admin ===== */
-function renderAdmin(){if(roleOf(currentUser())!=='admin')return denied();return `${adminSettings()}
+function renderAdmin(){if(roleOf(currentUser())!=='admin')return denied();return `${adminSettings()}${adminMembers()}
   <div class="card"><h2>無料チケット発行</h2><div class="row"><select id="tUser">${state.users.map(u=>`<option value="${u.id}">${u.nick}</option>`).join('')}</select><button onclick="issueTicket(document.getElementById('tUser').value)">発行</button></div></div>
   <div class="card"><h2>イベントの収支</h2><p class="muted small">サスティナブルライン＝黒字に必要な人数。</p>${state.events.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(adminEventRow).join('')||'<div class="muted small">イベントがありません</div>'}</div>
   ${voteLogs()}${ringLegend()}`}
@@ -315,6 +318,7 @@ function voteLogs(){const logs=(state.votes||[]).slice().sort((a,b)=>b.createdAt
 function ringLegend(){return `<div class="card"><h2>リングの色</h2><div class="legend"><div><span class="ringMini ring-black"><span class="inner">🌱</span></span>管理者</div><div><span class="ringMini ring-purple"><span class="inner">🌱</span></span>スタッフ</div><div><span class="ringMini ring-white"><span class="inner">👤</span></span>参加者（標準）</div><div><span class="ringMini ring-blue"><span class="inner">👤</span></span>ブルー</div><div><span class="ringMini ring-green"><span class="inner">👤</span></span>グリーン</div><div><span class="ringMini ring-red"><span class="inner">👤</span></span>レッド</div><div><span class="ringMini ring-gold"><span class="inner">👤</span></span>ゴールド</div></div></div>`}
 
 /* ===== analytics ===== */
+function adminMembers(){return `<div class="card"><h2>会員のログイン・登録情報</h2><p class="muted small">各会員が設定したログイン用メール・パスワードと、保険登録の状況です。※本番ではパスワードを暗号化し、画面表示は避けてください。</p>${state.users.map(u=>`<div class="erow"><div><b>${u.nick}</b><div class="muted small">${roleLabel(u)}</div></div><div style="text-align:right"><div class="small">メール：${u.email||'—'}</div><div class="small">パスワード：${u.password||'—'}</div><div class="small ${u.insurance?'':'muted'}">${u.insurance?`保険加入：${u.birth||'生年月日未登録'}／${u.address||'住所未登録'}`:'保険：未加入'}</div></div></div>`).join('')}</div>`}
 function renderAnalytics(){if(roleOf(currentUser())!=='admin')return denied();const a={};state.events.forEach(e=>{const mo=e.date.slice(0,7);a[mo]=a[mo]||{total:0};a[mo].total+=e.bookings.length});const max=Math.max(1,...Object.values(a).map(x=>x.total));const bySport={};state.events.forEach(e=>bySport[e.sport]=(bySport[e.sport]||0)+e.bookings.length);const maxS=Math.max(1,...Object.values(bySport));const phones=[...new Set((state.votes||[]).map(v=>v.targetPhone))];const rank=phones.map(p=>({p,pts:votePoints(p),u:userByPhone(p)})).sort((x,y)=>y.pts-x.pts);
   return `<div class="card"><h2>貢献ポイント</h2>${rank.length?rank.map(r=>`<div class="erow"><span>${personRow({phone:r.p,nick:r.u.nick||r.p,icon:r.u.icon})}</span><b>${r.pts}pt</b></div>`).join(''):'<div class="muted small">まだ投票がありません</div>'}</div>
   <div class="card"><h2>月別 参加者</h2>${Object.entries(a).map(([m,v])=>`<div class="bstat"><div class="between"><b>${m}</b><span>${v.total}人</span></div><div class="bar"><span style="width:${v.total/max*100}%"></span></div></div>`).join('')||'<div class="muted small">データなし</div>'}</div>
