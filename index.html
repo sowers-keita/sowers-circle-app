@@ -47,6 +47,7 @@ label{font-size:12px;color:var(--muted);font-weight:600}
 .day{position:relative;min-height:46px;border:1px solid var(--line);border-radius:14px;background:var(--card);font-size:13px;font-weight:600;color:var(--ink);padding:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .12s}
 .day:active{transform:scale(.96)}
 .day .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);margin-top:3px}
+.dayemo{font-size:11px;line-height:1;margin-top:2px;letter-spacing:-1px;max-width:100%;overflow:hidden;white-space:nowrap}
 .day.has{border-color:var(--main)}
 .day.selected{border-color:var(--main);box-shadow:inset 0 0 0 1px var(--main)}
 .day.picked{background:var(--main);border-color:var(--main);color:#fff}
@@ -208,7 +209,7 @@ function denied(){return '<div class="card center muted">この画面は表示�
 
 /* ===== reserve ===== */
 function pickDate(d){selectedDate=d;render()}
-function calendarPick(sel,fn){return `<div class="calendar">${monthDays().map(d=>d?`<button class="day ${byDate(d).length?'has':''} ${d===sel?'selected':''}" onclick="${fn}('${d}')"><b>${Number(d.slice(8))}</b>${byDate(d).length?'<i class="dot"></i>':''}</button>`:'<i></i>').join('')}</div>`}
+function calendarPick(sel,fn){return `<div class="calendar">${monthDays().map(d=>{if(!d)return '<i></i>';const evs=byDate(d);const emo=evs.map(e=>sportEmoji(e.sport)).join('');return `<button class="day ${evs.length?'has':''} ${d===sel?'selected':''}" onclick="${fn}('${d}')"><b>${Number(d.slice(8))}</b>${emo?`<span class="dayemo">${emo}</span>`:''}</button>`}).join('')}</div>`}
 function renderReserve(){const evs=byDate(selectedDate);return `
   <div class="card"><h2>予約カレンダー</h2><p class="muted small">日付をタップ。色付きの日にイベントがあります。</p>${calendarPick(selectedDate,'pickDate')}</div>
   <div class="muted small center">${fmtDate(selectedDate)} のイベント</div>
