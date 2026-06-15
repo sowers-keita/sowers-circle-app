@@ -328,10 +328,10 @@ function renderMypage(){const u=currentUser();const isP=roleOf(u)==='participant
   return `
   <div class="card"><div class="prow big">${personRow({phone:u.phone,nick:u.nick,icon:u.icon})}</div>
     ${isP?`<div class="sline" style="margin-top:10px">貢献ポイント <b>${pts}pt</b>${nxt.remain?`／あと <b>${nxt.remain}pt</b> で ${nxt.next}リング`:'（最高ランク：ゴールドリング）'}<div class="muted small" style="margin-top:4px">練習後アンケートで選ばれると貯まります。誰が投票したかは分かりません。</div></div>`:`<div class="sline" style="margin-top:10px">管理者・スタッフは固定リングです</div>`}</div>
-  ${isP?`<div class="card"><h2>自分のイベント</h2>
+  <div class="card"><h2>自分のイベント</h2>
     <details class="pd"><summary>予約しているイベント（${upcoming.length}件）</summary><div class="pdbody">${upcoming.length?upcoming.map(e=>`<div class="evline"><span>${fmtDate(e.date)} ${sportEmoji(e.sport)}${e.sport}</span><span class="muted">${e.time}・${e.place}</span></div>`).join(''):'<div class="muted small">予約はありません</div>'}</div></details>
     <details class="pd"><summary>参加したイベント（${past.length}件）</summary><div class="pdbody">${past.length?past.map(e=>{const pend=canVoteEvent(e)&&!votedDone(e.id);return `<button class="evbtn" onclick="goVote('${e.date}','${e.id}')"><span>${fmtDate(e.date)} ${sportEmoji(e.sport)}${e.sport}・${e.time}</span>${pend?'<span class="badge-new">未投票</span>':(canVoteEvent(e)?'<span class="muted small">投票済み</span>':'')}</button>`}).join(''):'<div class="muted small">まだありません</div>'}</div></details>
-    <p class="muted small" style="margin-top:8px">「参加したイベント」をタップすると投票画面へ移動します。未投票のイベントには赤いバッジが付きます。</p></div>`:''}
+    ${isP?`<p class="muted small" style="margin-top:8px">「参加したイベント」をタップすると投票画面へ移動します。未投票のイベントには赤いバッジが付きます。</p>`:''}</div>
   <div class="card"><h2>写真・絵文字</h2>
     <label class="filebtn"><span class="material-symbols-rounded">photo_camera</span>写真を選ぶ<input type="file" accept="image/*" onchange="setImage(event)" hidden></label>
     ${u.image?`<button class="ghost" onclick="clearImage()">写真を削除</button>`:''}
@@ -415,7 +415,18 @@ function renderAnalytics(){if(roleOf(currentUser())!=='admin')return denied();co
 const TUT_KEY='sowers_demo_tut_seen';
 let tutStep=0;
 function tutSteps(role){
-  const participant=[
+  if(role==='admin')return [
+    {emo:'⚙️',title:'管理者ガイド',body:'管理者向けの使い方です。予約・マイページの基本操作は参加者と同じなので、ここでは管理者だけの画面を案内します。'},
+    {emo:'🏟️',title:'場所と料金の設定',body:'「管理」タブで場所代・人件費・参加費を設定。ここで決めた金額が、スタッフの作るイベントに自動で使われます。'},
+    {emo:'🔐',title:'会員情報の確認',body:'各会員のログイン用メール・パスワード・保険の加入状況（住所・生年月日）を確認できます。これらは本人と管理者だけが見られます。'},
+    {emo:'🗳️',title:'投票ログ・分析',body:'投票ログとリングの色のルールを確認できます。「分析」タブでは参加者数や貢献ポイントのランキングが見られます。'},
+  ];
+  if(role==='staff')return [
+    {emo:'📣',title:'スタッフガイド',body:'スタッフ向けの使い方です。予約・マイページの基本操作は参加者と同じなので、ここではスタッフだけの画面を案内します。'},
+    {emo:'🗓️',title:'イベント作成',body:'「スタッフ」タブで競技・時間・場所・定員を選び、カレンダーで開催日を複数タップ →「まとめて作成」。同じ条件の日をいっぺんに作れます。'},
+    {emo:'✅',title:'出欠確認',body:'「出欠確認」でイベントのある日をタップ → 参加者をタップすると「参加」に切り替わります。'},
+  ];
+  return [
     {emo:'👋',title:'ようこそ sowers へ',body:'サークルの予約・出欠・コミュニティをこのアプリ1つで。下のタブで画面を切り替えます。まずは基本の使い方を見ていきましょう。'},
     {emo:'📅',title:'予約する',body:'「予約」タブでカレンダーの日付をタップ。競技絵文字が付いた日にイベントがあります。「ワンタップで予約」を押すだけで参加登録できます。'},
     {emo:'⏳',title:'満員のとき・キャンセル',body:'満員のイベントは「キャンセル待ちに入る」になります。誰かがキャンセルすると、待っている人が自動で繰り上がります。自分の予約はいつでも取り消せます。'},
@@ -423,17 +434,6 @@ function tutSteps(role){
     {emo:'⭐',title:'練習後アンケート',body:'参加した練習のあと、よかった人を3人まで選んで投票できます。たくさん選ばれるとリングの色が変わります。誰に投票したかは本人には伝わりません。'},
     {emo:'🙂',title:'マイページ',body:'アイコン・プロフィール・ログイン情報・スポーツ保険の設定ができます。保険は無料。加入する場合のみ住所と生年月日が必要です。'},
   ];
-  const staff=[
-    {emo:'📣',title:'スタッフ：イベント作成',body:'「スタッフ」タブで競技・時間・場所・定員を選び、カレンダーで開催日を複数タップ →「まとめて作成」。同じ条件の日をいっぺんに作れます。'},
-    {emo:'✅',title:'スタッフ：出欠確認',body:'「出欠確認」でイベントのある日をタップ → 参加者をタップすると「参加」に切り替わります。'},
-  ];
-  const admin=[
-    {emo:'⚙️',title:'管理：場所と料金',body:'「管理」タブで場所代・人件費・参加費を設定。ここで決めた金額がスタッフの作るイベントに自動で使われます。'},
-    {emo:'🗳️',title:'管理：投票ログ・分析',body:'投票ログとリングの色のルール、会員のログイン・保険情報を確認できます。「分析」タブでは参加者数や貢献ポイントが見られます。'},
-  ];
-  if(role==='admin')return [...participant,...staff,...admin];
-  if(role==='staff')return [...participant,...staff];
-  return participant;
 }
 function openTutorial(){tutStep=0;drawTutorial()}
 function closeTutorial(){const el=document.getElementById('tutOverlay');if(el)el.remove()}
