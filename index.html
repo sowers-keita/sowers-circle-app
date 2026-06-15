@@ -173,6 +173,11 @@ details.pd .pdbody{padding:4px 14px 12px}
 .finsum .money{font-size:16px}
 .msgbox{background:var(--main-soft,#E7F5F0);border-radius:14px;padding:12px;margin-top:8px}
 .msgrow{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:8px}
+.calhead{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:4px}
+.calhead span{text-align:center;font-size:11px;color:var(--muted);font-weight:700}
+.calhead .sat{color:#3b82f6}.calhead .sun{color:var(--warn)}
+.day.sat b{color:#3b82f6}.day.sun b{color:var(--warn)}
+.day.picked b{color:#fff}
 </style>
 </head>
 <body>
@@ -275,7 +280,9 @@ function beginnerMark(p){return isFirstTimer(p)?'<span class="beginner-mark">�
 function personRow(p){return `<span class="ringMini ${ringClassFor(p)}"><span class="inner">${avatarInner(p)}</span>${birthdayHat(p)}${beginnerMark(p)}</span><span class="emoji-badge">${personIcon(p)}</span><span class="p-name">${p.nick||userByPhone(p.phone).nick||p.phone}</span> <span class="role-tag">${roleLabel(p)}</span>`}
 
 /* ===== calendar ===== */
-function monthDays(){const now=new Date();const y=now.getFullYear(),m=now.getMonth();const first=new Date(y,m,1);const days=new Date(y,m+1,0).getDate();let arr=[];for(let i=0;i<first.getDay();i++)arr.push(null);for(let day=1;day<=days;day++)arr.push(new Date(y,m,day).toISOString().slice(0,10));return arr}
+function monthDays(){const now=new Date();const y=now.getFullYear(),m=now.getMonth();const first=new Date(y,m,1);const days=new Date(y,m+1,0).getDate();let arr=[];const lead=(first.getDay()+6)%7;for(let i=0;i<lead;i++)arr.push(null);for(let day=1;day<=days;day++)arr.push(new Date(y,m,day).toISOString().slice(0,10));return arr}
+function wdClass(d){const g=new Date(d+'T00:00').getDay();return g===0?'sun':g===6?'sat':''}
+function weekHeader(){return `<div class="calhead"><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span class="sat">土</span><span class="sun">日</span></div>`}
 function byDate(d){return state.events.filter(e=>e.date===d)}
 
 /* ===== navigation ===== */
@@ -288,7 +295,7 @@ function denied(){return '<div class="card center muted">この画面は表示�
 /* ===== reserve ===== */
 function pickDate(d){selectedDate=d;render()}
 function goVote(d,eid){currentTab='reserve';selectedDate=d;render();setTimeout(()=>{const el=document.getElementById('survey-'+eid);if(el)el.scrollIntoView({behavior:'smooth',block:'center'})},80)}
-function calendarPick(sel,fn){return `<div class="calendar">${monthDays().map(d=>{if(!d)return '<i></i>';const evs=byDate(d);const emo=evs.map(e=>sportEmoji(e.sport)).join('');return `<button class="day ${evs.length?'has':''} ${d===sel?'selected':''}" onclick="${fn}('${d}')"><b>${Number(d.slice(8))}</b>${emo?`<span class="dayemo">${emo}</span>`:''}</button>`}).join('')}</div>`}
+function calendarPick(sel,fn){return `${weekHeader()}<div class="calendar">${monthDays().map(d=>{if(!d)return '<i></i>';const evs=byDate(d);const emo=evs.map(e=>sportEmoji(e.sport)).join('');return `<button class="day ${wdClass(d)} ${evs.length?'has':''} ${d===sel?'selected':''}" onclick="${fn}('${d}')"><b>${Number(d.slice(8))}</b>${emo?`<span class="dayemo">${emo}</span>`:''}</button>`}).join('')}</div>`}
 function pendingVoteEvents(){const me=currentUser();if(roleOf(me)!=='participant')return [];return state.events.filter(e=>e.date<=today() && e.bookings.some(b=>b.phone===me.phone) && !(state.votes||[]).some(v=>v.eventId===e.id&&v.voterPhone===me.phone) && e.bookings.some(p=>roleOf(p)==='participant'&&p.phone!==me.phone))}
 function voteBanner(){const pend=pendingVoteEvents();if(!pend.length)return '';const e=pend[0];return `<div class="vote-banner" onclick="goVote('${e.date}','${e.id}')"><span class="vbe">⭐</span><div style="flex:1"><b>${fmtDate(e.date)} ${e.sport} おつかれさまでした！</b><div class="small">タップして、よかった人に投票${pend.length>1?`（ほか${pend.length-1}件）`:''}</div></div><button>投票する</button></div>`}
 function renderReserve(){const evs=byDate(selectedDate);return `
@@ -421,7 +428,7 @@ function staffCreate(){const pl=state.settings.places||[];return `
     <div class="field"><label>定員</label><input id="cCap" type="number" value="12" oninput="updateLine()"></div>
     <div id="lineBox" class="sline"></div></div>
   <div class="card"><h2>開催日を選ぶ</h2><p class="muted small">同じ場所・時間・競技の日をタップ（複数OK）→ まとめて作成。</p>
-    <div class="calendar">${monthDays().map(d=>d?`<button type="button" class="day ${byDate(d).length?'has':''} ${createDates.includes(d)?'picked':''}" onclick="toggleCreate('${d}',this)"><b>${Number(d.slice(8))}</b></button>`:'<i></i>').join('')}</div>
+    ${weekHeader()}<div class="calendar">${monthDays().map(d=>d?`<button type="button" class="day ${wdClass(d)} ${byDate(d).length?'has':''} ${createDates.includes(d)?'picked':''}" onclick="toggleCreate('${d}',this)"><b>${Number(d.slice(8))}</b></button>`:'<i></i>').join('')}</div>
     <div class="between" style="margin-top:12px"><span class="pill" id="cCount">選択 ${createDates.length}日</span><button onclick="bulkCreate()">まとめて作成</button></div></div>`}
 function updateLine(){const box=document.getElementById('lineBox');if(!box)return;const place=document.getElementById('cPlace').value;const time=document.getElementById('cTime').value;const hrs=hoursOf(time);const venue=placePerHour(place)*hrs;const labor=(+state.settings.laborPerHour||0)*hrs;const fee=(+state.settings.fee||0);const cap=+document.getElementById('cCap').value||0;const cost=venue+labor;const line=Math.ceil(cost/Math.max(fee,1));const over=line>cap;box.innerHTML=`<div class="money"${over?' style="color:var(--warn)"':''}>サスティナブルライン：${line}人</div>`}
 function toggleCreate(d,el){const i=createDates.indexOf(d);if(i>=0){createDates.splice(i,1);el.classList.remove('picked')}else{createDates.push(d);el.classList.add('picked')}const c=document.getElementById('cCount');if(c)c.textContent=`選択 ${createDates.length}日`}
